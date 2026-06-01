@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PALETI — 날씨 따라 오늘의 색을 골라드려요</title>
+<meta name="description" content="GPS 날씨를 자동으로 읽어 오늘 입을 상의·하의·신발 색을 AI가 추천해주는 미니멀 코디 앱. 출근 전 1분, 거울 앞에서 빠르게.">
+
+<!-- Open Graph (카카오톡/메신저 공유 미리보기) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="PALETI — 날씨 따라 오늘의 색을 골라드려요">
+<meta property="og:description" content="GPS 날씨를 읽어 오늘 입을 색을 AI가 추천하는 미니멀 코디 앱.">
+<meta property="og:url" content="https://byiryu.github.io/paleti/">
+<meta property="og:locale" content="ko_KR">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  :root {
+    --bg: #F8F5F0;
+    --surface: #FFFFFF;
+    --text: #1A1A1A;
+    --subtext: #7A7468;
+    --brand: #2C4E80;
+    --border: #E8E5E0;
+    --gold: #8C6A1F;        /* a11y 정합: Light 골드 텍스트 */
+    --gold-fill: #C89A3A;   /* 골드 fill(배지·보더·gradient) */
+    --tint: #FFF4D6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1A1815;
+      --surface: #2A2520;
+      --text: #F0EDE8;
+      --subtext: #A89B8C;
+      --brand: #8FA9C9;
+      --border: #3A352F;
+      --gold: #C89A3A;
+      --gold-fill: #C89A3A;
+      --tint: #3A3220;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.2px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; }
+
+  /* ── Hero ───────────────────────────── */
+  header.hero { padding: 80px 0 64px; }
+  .brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+  .logo-mark {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--brand), var(--gold-fill));
+    display: grid; place-items: center;
+    color: #fff; font-weight: 800; font-size: 22px;
+  }
+  .brand-name { font-size: 20px; font-weight: 700; }
+
+  .hero-grid {
+    display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center;
+  }
+  h1 { font-size: 44px; font-weight: 800; line-height: 1.22; letter-spacing: -1px; }
+  h1 .accent { color: var(--brand); }
+  .lede { margin-top: 20px; font-size: 18px; color: var(--subtext); max-width: 460px; }
+
+  .stores { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .store-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--text); color: var(--bg);
+    padding: 13px 22px; border-radius: 999px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+  .store-btn:hover { transform: translateY(-2px); }
+  .store-btn--soon {
+    background: transparent; color: var(--subtext);
+    border: 1px solid var(--border); cursor: default;
+  }
+  .store-btn--soon:hover { transform: none; }
+  .store-btn svg { width: 20px; height: 20px; }
+  .store-btn .small { display: block; font-size: 11px; font-weight: 500; opacity: .75; line-height: 1.1; }
+  .store-btn .big { display: block; font-size: 16px; font-weight: 700; line-height: 1.15; }
+
+  /* ── Hero 미리보기 카드 (앱 핵심 = 색 추천) ── */
+  .preview-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 24px; padding: 24px;
+    box-shadow: 0 24px 60px -28px rgba(44,78,128,.28);
+  }
+  .pc-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  .pc-loc { font-size: 20px; font-weight: 700; }
+  .pc-temp { font-size: 14px; color: var(--subtext); }
+  .pc-sub { font-size: 13px; color: var(--subtext); margin-bottom: 18px; }
+  .pc-anchor {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--gold-fill); color: #3A2F12;
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    margin-bottom: 16px;
+  }
+  .swatch-row { display: flex; flex-direction: column; gap: 12px; }
+  .swatch {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px; border: 1px solid var(--border); border-radius: 12px;
+  }
+  .chip { width: 44px; height: 44px; border-radius: 10px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .sw-label { font-size: 13px; color: var(--subtext); }
+  .sw-name { font-size: 15px; font-weight: 600; }
+
+  /* ── Features ───────────────────────── */
+  section { padding: 64px 0; }
+  .sec-title { font-size: 14px; font-weight: 600; color: var(--subtext); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; text-align: center; }
+  .sec-h2 { font-size: 30px; font-weight: 800; text-align: center; letter-spacing: -0.6px; margin-bottom: 48px; }
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px 24px;
+  }
+  .f-icon { font-size: 28px; margin-bottom: 14px; }
+  .feature h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .feature p { font-size: 14px; color: var(--subtext); line-height: 1.6; }
+
+  /* ── 가치 배너 ─────────────────────── */
+  .value {
+    background: var(--tint); border-radius: 24px;
+    padding: 56px 40px; text-align: center;
+  }
+  .value h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .value p { margin-top: 14px; color: var(--subtext); font-size: 16px; max-width: 520px; margin-left: auto; margin-right: auto; }
+
+  /* ── Footer ─────────────────────────── */
+  footer { border-top: 1px solid var(--border); padding: 40px 0 64px; }
+  .foot-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; align-items: flex-start; }
+  .foot-brand { font-weight: 700; font-size: 16px; }
+  .foot-brand span { color: var(--subtext); font-weight: 400; font-size: 13px; display: block; margin-top: 6px; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 20px; font-size: 14px; }
+  .foot-links a { color: var(--subtext); text-decoration: none; }
+  .foot-links a:hover { color: var(--text); text-decoration: underline; }
+  .copy { margin-top: 28px; font-size: 12px; color: var(--subtext); }
+
+  @media (max-width: 760px) {
+    header.hero { padding: 48px 0 40px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    h1 { font-size: 34px; }
+    .features { grid-template-columns: 1fr; }
+    .preview-card { order: -1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- ───────── Hero ───────── -->
+  <header class="hero">
+    <div class="brand-row">
+      <div class="logo-mark">P</div>
+      <div class="brand-name">PALETI</div>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <h1>날씨 따라<br>오늘의 <span class="accent">색</span>을<br>골라드려요</h1>
+        <p class="lede">GPS로 오늘 날씨를 자동으로 읽어, 상의·하의·신발 색을 AI가 추천합니다. 출근 전 1분, 거울 앞에서 빠르게.</p>
+
+        <div class="stores">
+          <!-- KR 전용 출시 → 명시적 /kr/ 링크 (모든 지역 방문자에게 페이지 노출 보장) -->
+          <a class="store-btn" href="https://apps.apple.com/kr/app/id6772863865" aria-label="App Store 에서 다운로드">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2.2 1.8-3.3 1.9-3.3-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.6.8-3.3.8-.7 0-1.7-.8-2.8-.8-1.4 0-2.8.8-3.5 2.1-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.7 2.1 1.1 0 1.5-.7 2.8-.7s1.6.7 2.8.7c1.1 0 1.9-1 2.6-2 .8-1.2 1.2-2.3 1.2-2.4-.1 0-2.3-.9-2.3-3.5zM14.2 6.3c.6-.7 1-1.7.9-2.7-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.6 1 .1 2-.5 2.5-1.2z"/></svg>
+            <span><span class="small">다운로드</span><span class="big">App Store</span></span>
+          </a>
+          <!-- Google Play 검토 중 — 출시되면 href 채우고 store-btn--soon 클래스 제거 -->
+          <span class="store-btn store-btn--soon" aria-label="Google Play 출시 예정">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3 13 11.7l-2.6 2.6L3 6.9C3 5 3.1 3.4 3.6 2.3zm1.4-.5c.4-.2.9-.2 1.4.1l9.9 5.7-2.3 2.3L5 1.8zM17.7 9.3l2.8 1.6c1 .6 1 1.6 0 2.2l-2.8 1.6-2.6-2.6 2.6-2.8zM6.4 22.2c-.5.3-1 .3-1.4.1l9-9 2.3 2.3-9.9 6.6z"/></svg>
+            <span><span class="small">곧 출시</span><span class="big">Google Play</span></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- 앱이 실제로 하는 일을 보여주는 미니 카드 -->
+      <div class="preview-card" aria-hidden="true">
+        <div class="pc-head">
+          <div class="pc-loc">서울 종로구</div>
+          <div class="pc-temp">5°C (체감 -1°C)</div>
+        </div>
+        <div class="pc-sub">맑음 · 미세먼지 보통</div>
+        <div class="pc-anchor">📌 오늘의 포인트 · 따뜻한 네이비</div>
+        <div class="swatch-row">
+          <div class="swatch">
+            <div class="chip" style="background:#2C4E80"></div>
+            <div><div class="sw-label">상의</div><div class="sw-name">딥 네이비 니트</div></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#D4C4A8"></div>
+            <div><div class="sw-label">하의</div><div class="sw-name">웜 베이지 슬랙스</div></div>
+          </div>
+          <div class="swatch">
+            <div class="chip" style="background:#6B4A2E"></div>
+            <div><div class="sw-label">신발</div><div class="sw-name">브라운 더비</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ───────── Features ───────── -->
+  <section>
+    <div class="sec-title">왜 PALETI 인가요</div>
+    <h2 class="sec-h2">고민은 줄이고, 색은 맞추고</h2>
+    <div class="features">
+      <div class="feature">
+        <div class="f-icon">📍</div>
+        <h3>날씨 자동 감지</h3>
+        <p>위치를 켜면 오늘의 기온·날씨·미세먼지를 자동으로 읽어, 날씨에 맞는 옷과 색을 골라줍니다.</p>
+      </div>
+      <div class="feature">
+        <div class="f-icon">🎨</div>
+        <h3>AI 색 추천</h3>
+        <p>상의·하의·신발(+필요하면 외투)의 색 조합을 AI가 제안. 매일 아침 색 매칭 고민을 대신합니다.</p>
+      </div>
+      <div class="feature">
+        <div class="f-icon">📱</div>
+        <h3>홈 위젯</h3>
+        <p>앱을 열지 않아도 홈 화면 위젯에서 오늘의 추천 색을 바로 확인. 거울 앞에서 한눈에.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── 가치 배너 ───────── -->
+  <section>
+    <div class="value">
+      <h2>미니멀하게, 따뜻하게</h2>
+      <p>정보 폭격도, 정신없는 띠배너도 없습니다. 출근·등교 전 거울 앞에서 5초면 끝나는, 딱 필요한 만큼의 색 추천.</p>
+    </div>
+  </section>
+
+  <!-- ───────── Footer ───────── -->
+  <footer>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        PALETI
+        <span>by byiryu studio</span>
+      </div>
+      <div class="foot-links">
+        <a href="https://byiryu.github.io/byiryu-studio-legal/paleti-privacy.html">개인정보처리방침</a>
+        <a href="https://byiryu.github.io/byiryu-studio-legal/paleti-terms.html">이용약관</a>
+        <a href="https://byiryu.github.io/byiryu-studio-legal/paleti-account-deletion.html">계정 삭제</a>
+        <a href="mailto:byiryustudio@gmail.com">문의</a>
+      </div>
+    </div>
+    <div class="copy">© 2026 byiryu studio. All rights reserved.</div>
+  </footer>
+</div>
+
+</body>
+</html>
