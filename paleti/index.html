@@ -70,17 +70,16 @@
   h1 .accent { color: var(--brand); }
   .lede { margin-top: 20px; font-size: 18px; color: var(--subtext); max-width: 460px; }
 
-  .stores { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 32px; }
+  .stores { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 14px; margin-top: 32px; }
   .badge-link { display: inline-flex; transition: transform .15s ease; }
   .badge-link:hover { transform: translateY(-2px); }
   .badge { display: block; }
-  /* 두 배지 모두 콘텐츠가 이미지를 꽉 채움(Google 배지는 투명 여백 crop 처리됨)
-     → 동일 height = 동일 버튼 크기 */
+  /* 두 배지 모두 콘텐츠가 이미지를 꽉 채움(Google 배지는 투명 여백 crop) → 동일 height = 동일 크기 */
   .badge-apple { height: 50px; }
   .badge-google { height: 50px; }
-  .badge-soon { display: inline-flex; flex-direction: column; align-items: center; gap: 0; }
-  .badge-soon .badge-google { opacity: .45; filter: grayscale(.3); }
-  .soon-cap { font-size: 11px; color: var(--subtext); margin-top: -2px; }
+  /* 곧 출시(심사 중): 배지는 동일하게 또렷이 보이되 비클릭 + 하단 캡션으로 상태 표시 */
+  .badge-soon { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 4px; cursor: default; }
+  .soon-cap { font-size: 11px; color: var(--subtext); }
 
   /* ── Hero 미리보기 카드 (앱 핵심 = 색 추천) ── */
   .preview-card {
