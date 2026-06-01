@@ -74,9 +74,10 @@
   .badge-link { display: inline-flex; transition: transform .15s ease; }
   .badge-link:hover { transform: translateY(-2px); }
   .badge { display: block; }
-  /* 애플 배지(여백 적음) vs 구글 배지(내부 패딩 큼) — 높이 차로 시각 높이 정렬 */
+  /* 애플 배지 = 콘텐츠 ~100% / 구글 배지 = 콘텐츠 76.8%(위아래 11.6% 투명 여백)
+     → 시각 버튼 높이 맞추려면 구글 img = 애플 × 1.30 */
   .badge-apple { height: 50px; }
-  .badge-google { height: 73px; }
+  .badge-google { height: 65px; }
   .badge-soon { display: inline-flex; flex-direction: column; align-items: center; gap: 0; }
   .badge-soon .badge-google { opacity: .45; filter: grayscale(.3); }
   .soon-cap { font-size: 11px; color: var(--subtext); margin-top: -2px; }
