@@ -74,10 +74,10 @@
   .badge-link { display: inline-flex; transition: transform .15s ease; }
   .badge-link:hover { transform: translateY(-2px); }
   .badge { display: block; }
-  /* 애플 배지 = 콘텐츠 ~100% / 구글 배지 = 콘텐츠 76.8%(위아래 11.6% 투명 여백)
-     → 시각 버튼 높이 맞추려면 구글 img = 애플 × 1.30 */
+  /* 두 배지 모두 콘텐츠가 이미지를 꽉 채움(Google 배지는 투명 여백 crop 처리됨)
+     → 동일 height = 동일 버튼 크기 */
   .badge-apple { height: 50px; }
-  .badge-google { height: 65px; }
+  .badge-google { height: 50px; }
   .badge-soon { display: inline-flex; flex-direction: column; align-items: center; gap: 0; }
   .badge-soon .badge-google { opacity: .45; filter: grayscale(.3); }
   .soon-cap { font-size: 11px; color: var(--subtext); margin-top: -2px; }
@@ -231,7 +231,7 @@
   <section>
     <div class="value">
       <h2>미니멀하게, 따뜻하게</h2>
-      <p>정보 폭격도, 정신없는 띠배너도 없습니다. 출근·등교 전 거울 앞에서 5초면 끝나는, 딱 필요한 만큼의 색 추천.</p>
+      <p>복잡한 설정도, 정보 폭격도 없이 — 오늘 날씨에 맞는 색 조합만 깔끔하게. 출근·등교 전 거울 앞에서 5초면 끝납니다.</p>
     </div>
   </section>
 
