@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PALETI — 날씨 따라 오늘의 색을 골라드려요</title>
+<title>PALETI - 오늘의 컬러 코디</title>
 <meta name="description" content="GPS 날씨를 자동으로 읽어 오늘 입을 상의·하의·신발 색을 AI가 추천해주는 미니멀 코디 앱. 출근 전 1분, 거울 앞에서 빠르게.">
 
 <!-- Open Graph (카카오톡/메신저 공유 미리보기) -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="PALETI — 날씨 따라 오늘의 색을 골라드려요">
+<meta property="og:title" content="PALETI - 오늘의 컬러 코디">
 <meta property="og:description" content="GPS 날씨를 읽어 오늘 입을 색을 AI가 추천하는 미니멀 코디 앱.">
 <meta property="og:url" content="https://byiryu.github.io/paleti/">
 <meta property="og:locale" content="ko_KR">
@@ -57,12 +57,11 @@
   header.hero { padding: 80px 0 64px; }
   .brand-row { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
   .logo-mark {
-    width: 40px; height: 40px; border-radius: 12px;
-    background: linear-gradient(135deg, var(--brand), var(--gold-fill));
-    display: grid; place-items: center;
-    color: #fff; font-weight: 800; font-size: 22px;
+    width: 40px; height: 40px; border-radius: 22%;
+    display: block; object-fit: cover;
   }
-  .brand-name { font-size: 20px; font-weight: 700; }
+  .brand-name { font-size: 20px; font-weight: 700; line-height: 1.15; }
+  .brand-sub { font-size: 13px; color: var(--subtext); margin-top: 1px; }
 
   .hero-grid {
     display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center;
@@ -71,23 +70,16 @@
   h1 .accent { color: var(--brand); }
   .lede { margin-top: 20px; font-size: 18px; color: var(--subtext); max-width: 460px; }
 
-  .stores { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-  .store-btn {
-    display: inline-flex; align-items: center; gap: 10px;
-    background: var(--text); color: var(--bg);
-    padding: 13px 22px; border-radius: 999px;
-    font-size: 15px; font-weight: 600; text-decoration: none;
-    transition: transform .15s ease, opacity .15s ease;
-  }
-  .store-btn:hover { transform: translateY(-2px); }
-  .store-btn--soon {
-    background: transparent; color: var(--subtext);
-    border: 1px solid var(--border); cursor: default;
-  }
-  .store-btn--soon:hover { transform: none; }
-  .store-btn svg { width: 20px; height: 20px; }
-  .store-btn .small { display: block; font-size: 11px; font-weight: 500; opacity: .75; line-height: 1.1; }
-  .store-btn .big { display: block; font-size: 16px; font-weight: 700; line-height: 1.15; }
+  .stores { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 32px; }
+  .badge-link { display: inline-flex; transition: transform .15s ease; }
+  .badge-link:hover { transform: translateY(-2px); }
+  .badge { display: block; }
+  /* 애플 배지(여백 적음) vs 구글 배지(내부 패딩 큼) — 높이 차로 시각 높이 정렬 */
+  .badge-apple { height: 50px; }
+  .badge-google { height: 73px; }
+  .badge-soon { display: inline-flex; flex-direction: column; align-items: center; gap: 0; }
+  .badge-soon .badge-google { opacity: .45; filter: grayscale(.3); }
+  .soon-cap { font-size: 11px; color: var(--subtext); margin-top: -2px; }
 
   /* ── Hero 미리보기 카드 (앱 핵심 = 색 추천) ── */
   .preview-card {
@@ -160,8 +152,11 @@
   <!-- ───────── Hero ───────── -->
   <header class="hero">
     <div class="brand-row">
-      <div class="logo-mark">P</div>
-      <div class="brand-name">PALETI</div>
+      <img class="logo-mark" src="assets/paleti-icon.jpg" alt="PALETI 앱 아이콘">
+      <div>
+        <div class="brand-name">PALETI</div>
+        <div class="brand-sub">오늘의 컬러 코디</div>
+      </div>
     </div>
 
     <div class="hero-grid">
@@ -171,14 +166,13 @@
 
         <div class="stores">
           <!-- KR 전용 출시 → 명시적 /kr/ 링크 (모든 지역 방문자에게 페이지 노출 보장) -->
-          <a class="store-btn" href="https://apps.apple.com/kr/app/id6772863865" aria-label="App Store 에서 다운로드">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2.2 1.8-3.3 1.9-3.3-1-1.5-2.6-1.7-3.2-1.7-1.4-.1-2.6.8-3.3.8-.7 0-1.7-.8-2.8-.8-1.4 0-2.8.8-3.5 2.1-1.5 2.6-.4 6.5 1.1 8.6.7 1 1.6 2.2 2.7 2.1 1.1 0 1.5-.7 2.8-.7s1.6.7 2.8.7c1.1 0 1.9-1 2.6-2 .8-1.2 1.2-2.3 1.2-2.4-.1 0-2.3-.9-2.3-3.5zM14.2 6.3c.6-.7 1-1.7.9-2.7-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.6 1 .1 2-.5 2.5-1.2z"/></svg>
-            <span><span class="small">다운로드</span><span class="big">App Store</span></span>
+          <a class="badge-link" href="https://apps.apple.com/kr/app/id6772863865" aria-label="App Store 에서 다운로드">
+            <img class="badge badge-apple" src="assets/app-store-badge.svg" alt="App Store에서 다운로드">
           </a>
-          <!-- Google Play 검토 중 — 출시되면 href 채우고 store-btn--soon 클래스 제거 -->
-          <span class="store-btn store-btn--soon" aria-label="Google Play 출시 예정">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3 13 11.7l-2.6 2.6L3 6.9C3 5 3.1 3.4 3.6 2.3zm1.4-.5c.4-.2.9-.2 1.4.1l9.9 5.7-2.3 2.3L5 1.8zM17.7 9.3l2.8 1.6c1 .6 1 1.6 0 2.2l-2.8 1.6-2.6-2.6 2.6-2.8zM6.4 22.2c-.5.3-1 .3-1.4.1l9-9 2.3 2.3-9.9 6.6z"/></svg>
-            <span><span class="small">곧 출시</span><span class="big">Google Play</span></span>
+          <!-- Google Play 검토 중 — 출시되면 이 블록을 <a class="badge-link" href="...">로 교체 -->
+          <span class="badge-soon" aria-label="Google Play 출시 예정">
+            <img class="badge badge-google" src="assets/google-play-badge.png" alt="Google Play에서 다운로드 (곧 출시)">
+            <span class="soon-cap">심사 중 · 곧 출시</span>
           </span>
         </div>
       </div>
@@ -245,7 +239,7 @@
     <div class="foot-grid">
       <div class="foot-brand">
         PALETI
-        <span>by byiryu studio</span>
+        <span>오늘의 컬러 코디 · by byiryu studio</span>
       </div>
       <div class="foot-links">
         <a href="https://byiryu.github.io/byiryu-studio-legal/paleti-privacy.html">개인정보처리방침</a>
